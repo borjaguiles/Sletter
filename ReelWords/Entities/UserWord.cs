@@ -25,5 +25,7 @@ namespace ReelWords
         {
             return _word.ToCharArray();
         }
+
+        public static implicit operator string(UserWord word) => word._word;
     }
 }
