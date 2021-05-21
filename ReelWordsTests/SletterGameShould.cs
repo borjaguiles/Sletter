@@ -40,6 +40,7 @@ namespace ReelWordsTests
             //Arrange
             var expectedLetters = new ReelLine(new[]{'a','b','c','d','e','f','g'});
             _letterReel.GetAvailableLetters().Returns(expectedLetters);
+            _gameReader.ReadNextWord().Returns(_quitWord);
             //Act
             _sletter.Play();
             //Assert
@@ -54,7 +55,6 @@ namespace ReelWordsTests
             //Act
             _sletter.Play();
             //Assert
-            _gamePrinter.Received(1).PrintReel(_sampleReelLine);
             _wordValidator.Received(1).CheckWord(userWord);
             _gamePrinter.Received(1).PrintInvalidWordMessage();
         }
@@ -64,12 +64,11 @@ namespace ReelWordsTests
         {
             _letterReel.GetAvailableLetters().Returns(_sampleReelLine);
             _gameReader.ReadNextWord().Returns(userWord, _quitWord);
-            _wordValidator.CheckWord(Arg.Is<UserWord>(s => IsEquivalentTo(s, userWord))).Returns(score);
+            _wordValidator.CheckWord(userWord).Returns(score);
             //Act
             _sletter.Play();
             //Assert
             _userSessionManager.Received(1).SaveScore(score);
-            _gamePrinter.Received(1).PrintReel(_sampleReelLine);
             _wordValidator.Received(1).CheckWord(userWord);
             _gamePrinter.Received(1).PrintWordScore(score);
         }
@@ -87,6 +86,20 @@ namespace ReelWordsTests
             _letterReel.Received(1).MoveSlots(userWord);
             _letterReel.Received(2).GetAvailableLetters();
             _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,nextReelLine)));
+        }
+
+        [Theory, AutoData]
+        public void PrintTheFullScore(UserWord userWord, Score score, UserWord secondUserWord, Score secondWordScore, Score totalScore)
+        {
+            var nextReelLine = new ReelLine(new[]{'d','x','k','p','f','s','s',});
+            _letterReel.GetAvailableLetters().Returns(_sampleReelLine, nextReelLine);
+            var printScoreWord = new UserWord("show score");
+            _gameReader.ReadNextWord().Returns(printScoreWord, _quitWord);
+            _userSessionManager.GetTotalScore().Returns(totalScore);
+            //Act
+            _sletter.Play();
+            //Assert
+            _gamePrinter.Received(1).PrintTotalScore(totalScore);
         }
 
         // This is used as a deep comparer

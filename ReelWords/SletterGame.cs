@@ -23,12 +23,19 @@ namespace ReelWords
 
         public void Play()
         {
-            UserWord word = null;
-            while (word == null || !word.IsEndGame())
+            while (true)
             {
                 var nextLetters = _letterReel.GetAvailableLetters();
                 _gamePrinter.PrintReel(nextLetters);
-                word = _gameReader.ReadNextWord();
+                var word = _gameReader.ReadNextWord();
+                if (word.IsEndGame())
+                    return;
+                if (word.IsPrintScore())
+                {
+                    var totalScore = _userSessionManager.GetTotalScore();
+                    _gamePrinter.PrintTotalScore(totalScore);
+                    continue;
+                }
                 var score = _wordValidator.CheckWord(word);
                 score.Match(s =>
                 {

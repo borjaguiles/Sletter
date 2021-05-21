@@ -7,5 +7,6 @@ namespace ReelWords
         void PrintReel(ReelLine reelLine);
         void PrintInvalidWordMessage();
         void PrintWordScore(Score score);
+        void PrintTotalScore(Score score);
     }
 }
