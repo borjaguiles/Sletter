@@ -24,7 +24,7 @@ namespace ReelWordsTests
             _gameReader = Substitute.For<IGameReader>();
             _gamePrinter = Substitute.For<IGamePrinter>();  
             _letterReel = Substitute.For<ILetterReel>();
-            _sletter = new SletterGame(_gamePrinter, _letterReel);
+            _sletter = new SletterGame(_gamePrinter, _letterReel, _gameReader, _wordValidator);
             _sampleReelLine = new ReelLine(new[]{'a','b','c','d','e','f','g'});
         }
 
