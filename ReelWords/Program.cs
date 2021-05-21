@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ReelWords.IO;
+using ReelWords.Reel;
 
 namespace ReelWords
 {
@@ -11,6 +12,7 @@ namespace ReelWords
                 .AddSingleton<ISletterGame, SletterGame>()
                 .AddSingleton<IGamePrinter, GamePrinter>()
                 .AddSingleton<IGameReader, GameReader>()
+                .AddTransient<ILetterReelGenerator, LetterReelGenerator>()
                 .BuildServiceProvider();
 
             var game = serviceProvider.GetService<ISletterGame>();
