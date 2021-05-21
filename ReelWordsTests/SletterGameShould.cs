@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
+using LanguageExt;
 using ReelWords;
 using Xunit;
 
@@ -17,14 +19,16 @@ namespace ReelWordsTests
         private IGameReader _gameReader;
         private ReelLine _sampleReelLine;
         private IWordValidator _wordValidator;
+        private IUserSessionManager _userSessionManager;
 
         public SletterGameShould()
         {
+            _userSessionManager = Substitute.For<IUserSessionManager>();
             _wordValidator = Substitute.For<IWordValidator>();
             _gameReader = Substitute.For<IGameReader>();
             _gamePrinter = Substitute.For<IGamePrinter>();  
             _letterReel = Substitute.For<ILetterReel>();
-            _sletter = new SletterGame(_gamePrinter, _letterReel, _gameReader, _wordValidator);
+            _sletter = new SletterGame(_gamePrinter, _letterReel, _gameReader, _wordValidator, _userSessionManager);
             _sampleReelLine = new ReelLine(new[]{'a','b','c','d','e','f','g'});
         }
 
@@ -40,18 +44,32 @@ namespace ReelWordsTests
             _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,expectedLetters)));
         }
 
-        [Fact]
-        public void ReadThePlayersWordAndFailCauseItDoesntExist()
+        [Theory,AutoData]
+        public void ReadThePlayersWordAndFailCauseItDoesntExist(UserWord userWord)
         {
-            var word = new UserWord("nucelar");
             _letterReel.GetAvailableLetters().Returns(_sampleReelLine);
-            _gameReader.ReadNextWord().Returns(word);
+            _gameReader.ReadNextWord().Returns(userWord);
             //Act
             _sletter.Play();
             //Assert
             _gamePrinter.Received(1).PrintReel(_sampleReelLine);
-            _wordValidator.Received(1).CheckWord(word);
+            _wordValidator.Received(1).CheckWord(userWord);
             _gamePrinter.Received(1).PrintInvalidWordMessage();
+        }
+
+        [Theory,AutoData]
+        public void ReadThePlayersWordSaveTheScoreAndPrintIt(UserWord userWord, Score score)
+        {
+            _letterReel.GetAvailableLetters().Returns(_sampleReelLine);
+            _gameReader.ReadNextWord().Returns(userWord);
+            _wordValidator.CheckWord(Arg.Is<UserWord>(s => IsEquivalentTo(s, userWord))).Returns(score);
+            //Act
+            _sletter.Play();
+            //Assert
+            _userSessionManager.Received(1).SaveScore(score);
+            _gamePrinter.Received(1).PrintReel(_sampleReelLine);
+            _wordValidator.Received(1).CheckWord(userWord);
+            _gamePrinter.Received(1).PrintWordScore(score);
         }
 
         // This is used as a deep comparer
@@ -61,4 +79,5 @@ namespace ReelWordsTests
             return true;
         }
     }
+
 }

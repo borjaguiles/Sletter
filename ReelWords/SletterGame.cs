@@ -10,7 +10,8 @@ namespace ReelWords
         private readonly IGameReader _gameReader;
         private readonly IWordValidator _wordValidator;
 
-        public SletterGame(IGamePrinter gamePrinter, ILetterReel letterReel, IGameReader gameReader, IWordValidator wordValidator)
+        public SletterGame(IGamePrinter gamePrinter, ILetterReel letterReel, IGameReader gameReader,
+            IWordValidator wordValidator, IUserSessionManager userSessionManager)
         {
             _gamePrinter = gamePrinter;
             _letterReel = letterReel;
