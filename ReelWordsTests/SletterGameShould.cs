@@ -54,7 +54,7 @@ namespace ReelWordsTests
             _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,_sampleReelLine)));
         }
 
-        [Theory,AutoData]
+        [Fact]
         public void ReadThePlayersWordAndFailCauseItDoesntExist()
         {
             var userWord = new UserWord("bed");
@@ -105,7 +105,7 @@ namespace ReelWordsTests
         }
 
         [Theory, AutoData]
-        public void PrintTheFullScore(UserWord userWord, Score score, UserWord secondUserWord, Score secondWordScore, Score totalScore)
+        public void PrintTheFullScore(Score totalScore)
         {
             _letterReelGenerator.GenerateAReel().Returns(_sampleReel);
             var printScoreWord = new UserWord("show score");

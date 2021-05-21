@@ -3,7 +3,7 @@ using System.Text;
 using FluentAssertions;
 using LanguageExt;
 using ReelWords;
-using ReelWords.WordValidator;
+using ReelWords.Validator;
 using Xunit;
 
 namespace ReelWordsTests

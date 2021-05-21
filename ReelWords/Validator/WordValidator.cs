@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace ReelWords.WordValidator
+namespace ReelWords.Validator
 {
     public class WordValidator : IWordValidator
     {
