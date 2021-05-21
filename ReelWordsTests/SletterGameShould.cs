@@ -72,6 +72,21 @@ namespace ReelWordsTests
             _gamePrinter.Received(1).PrintWordScore(score);
         }
 
+        [Theory,AutoData]
+        public void PlayATurnUpdateTheReelAndPrintIt(UserWord userWord, Score score)
+        {
+            var nextReelLine = new ReelLine(new[]{'d','x','k','p','f','s','s',});
+            _letterReel.GetAvailableLetters().Returns(_sampleReelLine, nextReelLine);
+            _gameReader.ReadNextWord().Returns(userWord);
+            _wordValidator.CheckWord(Arg.Is<UserWord>(s => IsEquivalentTo(s, userWord))).Returns(score);
+            //Act
+            _sletter.Play();
+            //Assert
+            _letterReel.Received(1).MoveSlots(userWord);
+            _letterReel.Received(2).GetAvailableLetters();
+            _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,nextReelLine)));
+        }
+
         // This is used as a deep comparer
         public bool IsEquivalentTo(object first, object second)
         {
