@@ -1,6 +1,6 @@
 ﻿namespace ReelWords
 {
-    internal interface ISletterGame
+    public interface ISletterGame
     {
         void Play();
     }
