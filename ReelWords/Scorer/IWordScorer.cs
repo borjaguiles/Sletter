@@ -1,4 +1,4 @@
-﻿namespace ReelWords.WordScorer
+﻿namespace ReelWords.Scorer
 {
     public interface IWordScorer
     {   

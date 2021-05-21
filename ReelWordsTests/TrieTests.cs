@@ -8,6 +8,7 @@ namespace ReelWordsTests
     {
         private const string AWESOME_CO = "pierplay";
 
+        //Prob should find way to run dictionary insertion once, still pretty fast though
         [Fact]
         public void TrieInsertTest()
         {
@@ -33,7 +34,6 @@ namespace ReelWordsTests
             trie.Insert("help");
             trie.Insert("helping");
             trie.Insert("helpless");
-            trie.Insert("chelpless");
             trie.Delete("helping");
             Assert.True(trie.Search("help"));
             Assert.True(trie.Search("helpless"));
