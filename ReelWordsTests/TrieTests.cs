@@ -23,7 +23,7 @@ namespace ReelWordsTests
             trie.Insert(AWESOME_CO);
             Assert.True(trie.Search(AWESOME_CO));
             trie.Delete(AWESOME_CO);
-            Assert.True(trie.Search(AWESOME_CO));
+            Assert.False(trie.Search(AWESOME_CO));
         }
     }
 }
