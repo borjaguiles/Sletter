@@ -20,5 +20,10 @@ namespace ReelWords
         {
             return _word.ToLower() == "show score";
         }
+
+        public char[] GetLetters()
+        {
+            return _word.ToCharArray();
+        }
     }
 }
