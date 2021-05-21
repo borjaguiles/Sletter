@@ -21,8 +21,12 @@ namespace ReelWordsTests
         {
             //Assert
             var expectedLine = new ReelLine(new []{'u','d','x','c','l','a','e'});
+            var expectedFourthIteration = new ReelLine(new []{'u','b','x','c','s','e','h'});
             var reel = _reelGenerator.GenerateAReel();
             reel.GetActiveLine().Should().BeEquivalentTo(expectedLine);
+            reel.MoveSlots(new UserWord("la"));
+            reel.MoveSlots(new UserWord("doe"));
+            reel.MoveSlots(new UserWord("duet"));
         }
     }
 }
