@@ -9,6 +9,7 @@ namespace ReelWords
         private readonly ILetterReel _letterReel;
         private readonly IGameReader _gameReader;
         private readonly IWordValidator _wordValidator;
+        private readonly IUserSessionManager _userSessionManager;
 
         public SletterGame(IGamePrinter gamePrinter, ILetterReel letterReel, IGameReader gameReader,
             IWordValidator wordValidator, IUserSessionManager userSessionManager)
@@ -17,6 +18,7 @@ namespace ReelWords
             _letterReel = letterReel;
             _gameReader = gameReader;
             _wordValidator = wordValidator;
+            _userSessionManager = userSessionManager;
         }
 
         public void Play()
@@ -25,7 +27,11 @@ namespace ReelWords
             _gamePrinter.PrintReel(nextLetters);
             var word = _gameReader.ReadNextWord();
             var score = _wordValidator.CheckWord(word);
-            score.Match(s => throw new NotImplementedException(), () => _gamePrinter.PrintInvalidWordMessage());
+            score.Match(s =>
+            {
+                _userSessionManager.SaveScore(s);
+                _gamePrinter.PrintWordScore(s);
+            }, () => _gamePrinter.PrintInvalidWordMessage());
 
         }
     }
