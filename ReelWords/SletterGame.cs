@@ -26,7 +26,7 @@ namespace ReelWords
             var reel = _letterReelGenerator.GenerateAReel();
             while (true)
             {
-                var nextLetters = reel.GetAvailableLine();
+                var nextLetters = reel.GetActiveLine();
                 _gamePrinter.PrintReel(nextLetters);
                 var word = _gameReader.ReadNextWord();
                 if (word.IsEndGame())
@@ -35,6 +35,12 @@ namespace ReelWords
                 {
                     var totalScore = _userSessionManager.GetTotalScore();
                     _gamePrinter.PrintTotalScore(totalScore);
+                    continue;
+                }
+
+                if (!reel.HasTheWord(word))
+                {
+                    _gamePrinter.PrintLettersNotFound();
                     continue;
                 }
                 var score = _wordValidator.CheckWord(word);

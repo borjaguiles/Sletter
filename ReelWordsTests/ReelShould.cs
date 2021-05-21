@@ -25,7 +25,7 @@ namespace ReelWordsTests
             _reel.MoveSlots(word);
             //Assert
             var expectedReelLine = new ReelLine(new[]{'a','i','c','k','l','f','g'});
-            var resultReelLine = _reel.GetAvailableLine();
+            var resultReelLine = _reel.GetActiveLine();
             resultReelLine.Should().BeEquivalentTo(expectedReelLine);
         }
 

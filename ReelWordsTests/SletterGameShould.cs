@@ -52,8 +52,9 @@ namespace ReelWordsTests
         }
 
         [Theory,AutoData]
-        public void ReadThePlayersWordAndFailCauseItDoesntExist(UserWord userWord)
+        public void ReadThePlayersWordAndFailCauseItDoesntExist()
         {
+            var userWord = new UserWord("bed");
             _letterReelGenerator.GenerateAReel().Returns(_sampleReel);
             _gameReader.ReadNextWord().Returns(userWord, _quitWord);
             //Act

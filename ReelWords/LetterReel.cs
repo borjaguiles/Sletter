@@ -1,19 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LanguageExt;
 
 namespace ReelWords
 {
     public class LetterReel
     {
         private readonly char[][] _letterBox;
+        private char[] activeLine => _letterBox[0];
 
         public LetterReel(params char[][] letterBox)
         {
             _letterBox = letterBox;
         }
 
-        public ReelLine GetAvailableLine()
+        public ReelLine GetActiveLine()
         {
-            return new ReelLine(_letterBox[0]);
+            return new ReelLine(activeLine);
         }
 
         public void MoveSlots(UserWord word)
@@ -51,9 +55,14 @@ namespace ReelWords
 
         private int FindLetterPosition(char letter)
         {
-            for (int i = 0; i < _letterBox[0].Length; i++)
+            return FindLetterInArray(letter, activeLine);
+        }
+
+        private int FindLetterInArray(char letter, char[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
             {
-                if (_letterBox[0][i] == letter)
+                if (array[i] == letter)
                 {
                     return i;
                     
@@ -61,6 +70,19 @@ namespace ReelWords
             }
 
             return -1;
+        }
+
+        public bool HasTheWord(UserWord word)
+        {
+            var allowedLetters = activeLine.ToList();
+            foreach (var letter in word.GetLetters())
+            {
+                if (!allowedLetters.Contains(letter))
+                    return false;
+                allowedLetters.Remove(letter);
+            }
+
+            return true;
         }
     }
 }
