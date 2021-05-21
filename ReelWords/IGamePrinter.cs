@@ -4,6 +4,7 @@ namespace ReelWords
 {
     public interface IGamePrinter
     {
-        Task PrintReel(ReelLine reelLine);
+        void PrintReel(ReelLine reelLine);
+        void PrintInvalidWordMessage();
     }
 }

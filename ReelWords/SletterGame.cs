@@ -18,7 +18,7 @@ namespace ReelWords
         {
             var nextLetters = _letterReel.GetAvailableLetters();
             _gamePrinter.PrintReel(nextLetters);
-            
+        
         }
     }
 }
