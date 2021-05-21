@@ -8,11 +8,13 @@
     <ItemGroup>
       <None Remove="Resources\american-english-large.txt" />
       <None Remove="Resources\reels.txt" />
+      <None Remove="Resources\scores.txt" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Resources\american-english-large.txt" />
       <EmbeddedResource Include="Resources\reels.txt" />
+      <EmbeddedResource Include="Resources\scores.txt" />
     </ItemGroup>
 
     <ItemGroup>

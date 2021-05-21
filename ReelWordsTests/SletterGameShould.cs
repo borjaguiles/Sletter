@@ -7,7 +7,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using LanguageExt;
 using ReelWords;
-using ReelWords.WordScorer;
+using ReelWords.Scorer;
 using Xunit;
 
 namespace ReelWordsTests

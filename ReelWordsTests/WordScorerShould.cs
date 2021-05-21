@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using FluentAssertions;
 using ReelWords;
+using ReelWords.Scorer;
 using Xunit;
 
 namespace ReelWordsTests

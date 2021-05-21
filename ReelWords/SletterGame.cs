@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ReelWords.WordScorer;
+using ReelWords.Scorer;
 
 namespace ReelWords
 {

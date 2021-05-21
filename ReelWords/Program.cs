@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ReelWords.IO;
 using ReelWords.Reel;
+using ReelWords.Scorer;
 using ReelWords.Validator;
 
 namespace ReelWords
@@ -10,11 +11,12 @@ namespace ReelWords
         static void Main(string[] args)
         {
             var serviceProvider = new ServiceCollection()
-                .AddSingleton<ISletterGame, SletterGame>()
+                .AddTransient<ISletterGame, SletterGame>()
                 .AddSingleton<IGamePrinter, GamePrinter>()
                 .AddSingleton<IGameReader, GameReader>()
                 .AddSingleton<IWordValidator, WordValidator>()
-                .AddSingleton<IUserSessionManager, UserSessionManager>()
+                .AddTransient<IUserSessionManager, UserSessionManager>()
+                .AddSingleton<IWordScorer, WordScorer>()
                 .AddTransient<ILetterReelGenerator, LetterReelGenerator>()
                 .BuildServiceProvider();
 
