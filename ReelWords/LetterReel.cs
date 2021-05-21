@@ -15,5 +15,10 @@ namespace ReelWords
         {
             return new ReelLine(_expectedLetters[0]);
         }
+
+        public void MoveSlots(UserWord word)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

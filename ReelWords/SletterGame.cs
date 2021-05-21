@@ -42,7 +42,7 @@ namespace ReelWords
                 {
                     _userSessionManager.SaveScore(s);
                     _gamePrinter.PrintWordScore(s);
-                    _letterReelGenerator.MoveSlots(word);
+                    reel.MoveSlots(word);
                 }, () => _gamePrinter.PrintInvalidWordMessage());
             }
         }
