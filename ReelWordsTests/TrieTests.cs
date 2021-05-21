@@ -25,5 +25,17 @@ namespace ReelWordsTests
             trie.Delete(AWESOME_CO);
             Assert.False(trie.Search(AWESOME_CO));
         }
+
+        [Fact]
+        public void TrieDeleteOnlyOneOutOfMany()
+        {
+            Trie trie = new Trie();
+            trie.Insert("help");
+            trie.Insert("helping");
+            trie.Insert("helpless");
+            trie.Delete("helping");
+            Assert.True(trie.Search("help"));
+            Assert.True(trie.Search("helpless"));
+        }
     }
 }
