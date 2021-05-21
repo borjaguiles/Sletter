@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ReelWords.WordScorer;
 
 namespace ReelWords
 {
@@ -10,15 +11,17 @@ namespace ReelWords
         private readonly IGameReader _gameReader;
         private readonly IWordValidator _wordValidator;
         private readonly IUserSessionManager _userSessionManager;
+        private readonly IWordScorer _wordScorer;
 
         public SletterGame(IGamePrinter gamePrinter, ILetterReelGenerator letterReelGenerator, IGameReader gameReader,
-            IWordValidator wordValidator, IUserSessionManager userSessionManager)
+            IWordValidator wordValidator, IUserSessionManager userSessionManager, IWordScorer wordScorer)
         {
             _gamePrinter = gamePrinter;
             _letterReelGenerator = letterReelGenerator;
             _gameReader = gameReader;
             _wordValidator = wordValidator;
             _userSessionManager = userSessionManager;
+            _wordScorer = wordScorer;
         }
 
         public void Play()
@@ -43,13 +46,18 @@ namespace ReelWords
                     _gamePrinter.PrintLettersNotFound();
                     continue;
                 }
-                var score = _wordValidator.CheckWord(word);
-                score.Match(s =>
+
+                if (_wordValidator.WordExists(word))
                 {
-                    _userSessionManager.SaveScore(s);
-                    _gamePrinter.PrintWordScore(s);
+                    var score = _wordScorer.Calculate(word);
+                    _userSessionManager.SaveScore(score);
+                    _gamePrinter.PrintWordScore(score);
                     reel.MoveSlots(word);
-                }, () => _gamePrinter.PrintInvalidWordMessage());
+                }
+                else
+                {
+                    _gamePrinter.PrintInvalidWordMessage();
+                }
             }
         }
     }

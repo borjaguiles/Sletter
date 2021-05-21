@@ -4,6 +4,6 @@ namespace ReelWords
 {
     public interface IWordValidator
     {
-        Option<Score> CheckWord(UserWord word);
+        bool WordExists(UserWord word);
     }
 }

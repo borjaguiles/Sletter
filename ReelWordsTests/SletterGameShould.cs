@@ -7,6 +7,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using LanguageExt;
 using ReelWords;
+using ReelWords.WordScorer;
 using Xunit;
 
 namespace ReelWordsTests
@@ -23,16 +24,18 @@ namespace ReelWordsTests
         private UserWord _quitWord;
         private char[] _sampleLineLetters;
         private LetterReel _sampleReel;
+        private IWordScorer _wordScorer;
 
         public SletterGameShould()
         {
+            _wordScorer = Substitute.For<IWordScorer>();
             _quitWord = new UserWord("quit");
             _userSessionManager = Substitute.For<IUserSessionManager>();
             _wordValidator = Substitute.For<IWordValidator>();
             _gameReader = Substitute.For<IGameReader>();
             _gamePrinter = Substitute.For<IGamePrinter>();  
             _letterReelGenerator = Substitute.For<ILetterReelGenerator>();
-            _sletter = new SletterGame(_gamePrinter, _letterReelGenerator, _gameReader, _wordValidator, _userSessionManager);
+            _sletter = new SletterGame(_gamePrinter, _letterReelGenerator, _gameReader, _wordValidator, _userSessionManager, _wordScorer);
             _sampleLineLetters = new[]{'a','b','c','d','e','f','g'};
             _sampleReelLine = new ReelLine(_sampleLineLetters);
             _sampleReel = new LetterReel(_sampleLineLetters);
@@ -60,7 +63,7 @@ namespace ReelWordsTests
             //Act
             _sletter.Play();
             //Assert
-            _wordValidator.Received(1).CheckWord(userWord);
+            _wordValidator.Received(1).WordExists(userWord);
             _gamePrinter.Received(1).PrintInvalidWordMessage();
         }
 
@@ -72,12 +75,13 @@ namespace ReelWordsTests
             _letterReelGenerator.GenerateAReel().Returns(reelWithTwoLines);
             var userWord = new UserWord("bed");
             _gameReader.ReadNextWord().Returns(userWord, _quitWord);
-            _wordValidator.CheckWord(userWord).Returns(score);
+            _wordValidator.WordExists(userWord).Returns(true);
+            _wordScorer.Calculate(userWord).Returns(score);
             //Act
             _sletter.Play();
             //Assert
             _userSessionManager.Received(1).SaveScore(score);
-            _wordValidator.Received(1).CheckWord(userWord);
+            _wordValidator.Received(1).WordExists(userWord);
             _gamePrinter.Received(1).PrintWordScore(score);
         }
 
@@ -89,7 +93,8 @@ namespace ReelWordsTests
             var reelWithTwoLines = new LetterReel(_sampleLineLetters, secondReelLetters);
             _letterReelGenerator.GenerateAReel().Returns(reelWithTwoLines);
             _gameReader.ReadNextWord().Returns(userWord, _quitWord);
-            _wordValidator.CheckWord(Arg.Is<UserWord>(s => IsEquivalentTo(s, userWord))).Returns(score);
+            _wordValidator.WordExists(userWord).Returns(true);
+            _wordScorer.Calculate(userWord).Returns(score);
             //Act
             _sletter.Play();
             //Assert
