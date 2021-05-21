@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
+using FluentAssertions;
 using LanguageExt;
 using ReelWords;
+using ReelWords.WordValidator;
 using Xunit;
 
 namespace ReelWordsTests
@@ -13,23 +14,15 @@ namespace ReelWordsTests
 
         public WordValidatorShould()
         {
-            //_wordValidator = new WordValidator();
+            _wordValidator = new WordValidator();
         }
 
         [Fact]
         public void ReturnNothingIfAWordDoesntExist()
         {
             //assert
-            //var result = _wordValidator.;
-            //result.IsNone.Should().BeTrue();
+            var result = _wordValidator.WordExists(new UserWord("asdasdasd"));
+            result.Should().BeFalse();
         }
     }
-
-    //public class WordValidator : IWordValidator
-    //{
-    //    public Option<Score> CheckWord(UserWord word)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
 }
