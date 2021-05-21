@@ -9,18 +9,38 @@ namespace ReelWordsTests
 {
     public class ReelShould
     {
+        private LetterReel _reel;
+
+        public ReelShould()
+        {
+            _reel = new LetterReel(new[]{'a','b','c','d','e','f','g'}, new[]{'h','i','j','k','l','m','n'});
+        }
+
         [Fact]
         public void ReplaceEachLetterUsedInAWordWithTheNextInTheSlot()
         {
             //Arrange
-            var reel = new LetterReel(new[]{'a','b','c','d','e','f','g'}, new[]{'h','i','j','k','l','m','n'});
             //Act
             var word = new UserWord("bed");
-            reel.MoveSlots(word);
+            _reel.MoveSlots(word);
             //Assert
             var expectedReelLine = new ReelLine(new[]{'a','i','c','k','l','f','g'});
-            var resultReelLine = reel.GetAvailableLine();
+            var resultReelLine = _reel.GetAvailableLine();
             resultReelLine.Should().BeEquivalentTo(expectedReelLine);
+        }
+
+        [Fact]
+        public void BeAbleToFindIfAWordIsWithinTheCurrentLine()
+        {
+            var word = new UserWord("bed");
+            _reel.HasTheWord(word).Should().BeTrue();
+        }
+
+        [Fact]
+        public void BeAbleToFindAWordIsntWithinTheCurrentLineup()
+        {
+            var word = new UserWord("aguila");
+            _reel.HasTheWord(word).Should().BeFalse();
         }
     }
 }
