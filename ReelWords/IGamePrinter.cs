@@ -4,6 +4,6 @@ namespace ReelWords
 {
     public interface IGamePrinter
     {
-        Task PrintReel(char[] letters);
+        Task PrintReel(ReelLine reelLine);
     }
 }

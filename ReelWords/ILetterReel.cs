@@ -4,6 +4,6 @@ namespace ReelWords
 {
     public interface ILetterReel
     {
-        Task<Letters> GetAvailableLetters();
+        ReelLine GetAvailableLetters();
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using ReelWords;
 using Xunit;
 
@@ -21,15 +22,22 @@ namespace ReelWordsTests
         }
 
         [Fact]
-        public async Task ShowThePlayerTheCurrentlyAvailableLettersInTheReel()
+        public void ShowThePlayerTheCurrentlyAvailableLettersInTheReel()
         {
-            var expectedLetters = new Letters(new[]{'a','b','c','d','e','f','g'});
+            var expectedLetters = new ReelLine(new[]{'a','b','c','d','e','f','g'});
             //Arrange
             _letterReel.GetAvailableLetters().Returns(expectedLetters);
             //Act
             _sletter.Play();
             //Assert
-            await _gamePrinter.Received(1).PrintReel(Arg.Is<char[]>(s => s.Equals(expectedLetters)));
+            _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,expectedLetters)));
+        }
+
+        // This is used as a deep comparer
+        public bool IsEquivalentTo(object first, object second)
+        {
+            first.Should().BeEquivalentTo(second);
+            return true;
         }
     }
 }
