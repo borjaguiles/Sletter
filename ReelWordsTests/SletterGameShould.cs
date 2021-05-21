@@ -20,9 +20,11 @@ namespace ReelWordsTests
         private ReelLine _sampleReelLine;
         private IWordValidator _wordValidator;
         private IUserSessionManager _userSessionManager;
+        private UserWord _quitWord;
 
         public SletterGameShould()
         {
+            _quitWord = new UserWord("quit");
             _userSessionManager = Substitute.For<IUserSessionManager>();
             _wordValidator = Substitute.For<IWordValidator>();
             _gameReader = Substitute.For<IGameReader>();
@@ -48,7 +50,7 @@ namespace ReelWordsTests
         public void ReadThePlayersWordAndFailCauseItDoesntExist(UserWord userWord)
         {
             _letterReel.GetAvailableLetters().Returns(_sampleReelLine);
-            _gameReader.ReadNextWord().Returns(userWord);
+            _gameReader.ReadNextWord().Returns(userWord, _quitWord);
             //Act
             _sletter.Play();
             //Assert
@@ -61,7 +63,7 @@ namespace ReelWordsTests
         public void ReadThePlayersWordSaveTheScoreAndPrintIt(UserWord userWord, Score score)
         {
             _letterReel.GetAvailableLetters().Returns(_sampleReelLine);
-            _gameReader.ReadNextWord().Returns(userWord);
+            _gameReader.ReadNextWord().Returns(userWord, _quitWord);
             _wordValidator.CheckWord(Arg.Is<UserWord>(s => IsEquivalentTo(s, userWord))).Returns(score);
             //Act
             _sletter.Play();
@@ -77,7 +79,7 @@ namespace ReelWordsTests
         {
             var nextReelLine = new ReelLine(new[]{'d','x','k','p','f','s','s',});
             _letterReel.GetAvailableLetters().Returns(_sampleReelLine, nextReelLine);
-            _gameReader.ReadNextWord().Returns(userWord);
+            _gameReader.ReadNextWord().Returns(userWord, _quitWord);
             _wordValidator.CheckWord(Arg.Is<UserWord>(s => IsEquivalentTo(s, userWord))).Returns(score);
             //Act
             _sletter.Play();

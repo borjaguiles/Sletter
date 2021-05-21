@@ -10,5 +10,10 @@ namespace ReelWords
         {
             _word = word;
         }
+
+        public bool IsEndGame()
+        {
+            return _word.ToLower() == "quit";
+        }
     }
 }

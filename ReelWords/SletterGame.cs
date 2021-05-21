@@ -23,16 +23,20 @@ namespace ReelWords
 
         public void Play()
         {
-            var nextLetters = _letterReel.GetAvailableLetters();
-            _gamePrinter.PrintReel(nextLetters);
-            var word = _gameReader.ReadNextWord();
-            var score = _wordValidator.CheckWord(word);
-            score.Match(s =>
+            UserWord word = null;
+            while (word == null || !word.IsEndGame())
             {
-                _userSessionManager.SaveScore(s);
-                _gamePrinter.PrintWordScore(s);
-            }, () => _gamePrinter.PrintInvalidWordMessage());
-
+                var nextLetters = _letterReel.GetAvailableLetters();
+                _gamePrinter.PrintReel(nextLetters);
+                word = _gameReader.ReadNextWord();
+                var score = _wordValidator.CheckWord(word);
+                score.Match(s =>
+                {
+                    _userSessionManager.SaveScore(s);
+                    _gamePrinter.PrintWordScore(s);
+                    _letterReel.MoveSlots(word);
+                }, () => _gamePrinter.PrintInvalidWordMessage());
+            }
         }
     }
 }
