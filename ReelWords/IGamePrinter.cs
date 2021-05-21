@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace ReelWordsTests
+namespace ReelWords
 {
-    internal interface IGamePrinter
+    public interface IGamePrinter
     {
         Task PrintReel(char[] letters);
     }

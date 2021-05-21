@@ -13,6 +13,13 @@ namespace ReelWordsTests
         private ISletterGame _sletter;
         private ILetterReel _letterReel;
 
+        public SletterGameShould()
+        {
+            _gamePrinter = Substitute.For<IGamePrinter>();  
+            _letterReel = Substitute.For<ILetterReel>();
+            _sletter = new SletterGame(_gamePrinter, _letterReel);
+        }
+
         [Fact]
         public async Task ShowThePlayerTheCurrentlyAvailableLettersInTheReel()
         {

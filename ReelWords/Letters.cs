@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReelWordsTests
+namespace ReelWords
 {
     public class Letters
     {

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace ReelWordsTests
+namespace ReelWords
 {
-    internal interface ILetterReel
+    public interface ILetterReel
     {
         Task<Letters> GetAvailableLetters();
     }

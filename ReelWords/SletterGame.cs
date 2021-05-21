@@ -2,8 +2,13 @@
 
 namespace ReelWords
 {
-    class SletterGame : ISletterGame
+    public class SletterGame : ISletterGame
     {
+        public SletterGame(IGamePrinter gamePrinter, ILetterReel letterReel)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Play()
         {
             bool playing = true;
