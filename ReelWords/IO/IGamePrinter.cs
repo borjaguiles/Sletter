@@ -8,5 +8,6 @@ namespace ReelWords
         void PrintInvalidWordMessage();
         void PrintWordScore(Score score);
         void PrintTotalScore(Score score);
+        void PrintLettersNotFound();
     }
 }

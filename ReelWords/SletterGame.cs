@@ -6,16 +6,16 @@ namespace ReelWords
     public class SletterGame : ISletterGame
     {
         private readonly IGamePrinter _gamePrinter;
-        private readonly ILetterReel _letterReel;
+        private readonly ILetterReelGenerator _letterReelGenerator;
         private readonly IGameReader _gameReader;
         private readonly IWordValidator _wordValidator;
         private readonly IUserSessionManager _userSessionManager;
 
-        public SletterGame(IGamePrinter gamePrinter, ILetterReel letterReel, IGameReader gameReader,
+        public SletterGame(IGamePrinter gamePrinter, ILetterReelGenerator letterReelGenerator, IGameReader gameReader,
             IWordValidator wordValidator, IUserSessionManager userSessionManager)
         {
             _gamePrinter = gamePrinter;
-            _letterReel = letterReel;
+            _letterReelGenerator = letterReelGenerator;
             _gameReader = gameReader;
             _wordValidator = wordValidator;
             _userSessionManager = userSessionManager;
@@ -23,9 +23,10 @@ namespace ReelWords
 
         public void Play()
         {
+            var reel = _letterReelGenerator.GenerateAReel();
             while (true)
             {
-                var nextLetters = _letterReel.GetAvailableLetters();
+                var nextLetters = reel.GetAvailableLine();
                 _gamePrinter.PrintReel(nextLetters);
                 var word = _gameReader.ReadNextWord();
                 if (word.IsEndGame())
@@ -41,7 +42,7 @@ namespace ReelWords
                 {
                     _userSessionManager.SaveScore(s);
                     _gamePrinter.PrintWordScore(s);
-                    _letterReel.MoveSlots(word);
+                    _letterReelGenerator.MoveSlots(word);
                 }, () => _gamePrinter.PrintInvalidWordMessage());
             }
         }

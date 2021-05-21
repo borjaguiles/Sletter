@@ -15,12 +15,14 @@ namespace ReelWordsTests
     {
         private IGamePrinter _gamePrinter;
         private ISletterGame _sletter;
-        private ILetterReel _letterReel;
+        private ILetterReelGenerator _letterReelGenerator;
         private IGameReader _gameReader;
         private ReelLine _sampleReelLine;
         private IWordValidator _wordValidator;
         private IUserSessionManager _userSessionManager;
         private UserWord _quitWord;
+        private char[] _sampleLineLetters;
+        private LetterReel _sampleReel;
 
         public SletterGameShould()
         {
@@ -29,28 +31,30 @@ namespace ReelWordsTests
             _wordValidator = Substitute.For<IWordValidator>();
             _gameReader = Substitute.For<IGameReader>();
             _gamePrinter = Substitute.For<IGamePrinter>();  
-            _letterReel = Substitute.For<ILetterReel>();
-            _sletter = new SletterGame(_gamePrinter, _letterReel, _gameReader, _wordValidator, _userSessionManager);
-            _sampleReelLine = new ReelLine(new[]{'a','b','c','d','e','f','g'});
+            _letterReelGenerator = Substitute.For<ILetterReelGenerator>();
+            _sletter = new SletterGame(_gamePrinter, _letterReelGenerator, _gameReader, _wordValidator, _userSessionManager);
+            _sampleLineLetters = new[]{'a','b','c','d','e','f','g'};
+            _sampleReelLine = new ReelLine(_sampleLineLetters);
+            _sampleReel = new LetterReel(_sampleLineLetters);
         }
 
         [Fact]
         public void ShowThePlayerTheCurrentlyAvailableLettersInTheReel()
         {
             //Arrange
-            var expectedLetters = new ReelLine(new[]{'a','b','c','d','e','f','g'});
-            _letterReel.GetAvailableLetters().Returns(expectedLetters);
+            var reel = new LetterReel(_sampleLineLetters);
+            _letterReelGenerator.GenerateAReel().Returns(reel);
             _gameReader.ReadNextWord().Returns(_quitWord);
             //Act
             _sletter.Play();
             //Assert
-            _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,expectedLetters)));
+            _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,_sampleReelLine)));
         }
 
         [Theory,AutoData]
         public void ReadThePlayersWordAndFailCauseItDoesntExist(UserWord userWord)
         {
-            _letterReel.GetAvailableLetters().Returns(_sampleReelLine);
+            _letterReelGenerator.GenerateAReel().Returns(_sampleReel);
             _gameReader.ReadNextWord().Returns(userWord, _quitWord);
             //Act
             _sletter.Play();
@@ -62,7 +66,7 @@ namespace ReelWordsTests
         [Theory,AutoData]
         public void ReadThePlayersWordSaveTheScoreAndPrintIt(UserWord userWord, Score score)
         {
-            _letterReel.GetAvailableLetters().Returns(_sampleReelLine);
+            _letterReelGenerator.GenerateAReel().Returns(_sampleReel);
             _gameReader.ReadNextWord().Returns(userWord, _quitWord);
             _wordValidator.CheckWord(userWord).Returns(score);
             //Act
@@ -76,23 +80,24 @@ namespace ReelWordsTests
         [Theory,AutoData]
         public void PlayATurnUpdateTheReelAndPrintIt(UserWord userWord, Score score)
         {
-            var nextReelLine = new ReelLine(new[]{'d','x','k','p','f','s','s',});
-            _letterReel.GetAvailableLetters().Returns(_sampleReelLine, nextReelLine);
+            var secondReelLetters = new[]{'d','x','k','p','f','s','s',};
+            var reelWithTwoLines = new LetterReel(_sampleLineLetters, secondReelLetters);
+            _letterReelGenerator.GenerateAReel().Returns(reelWithTwoLines);
             _gameReader.ReadNextWord().Returns(userWord, _quitWord);
             _wordValidator.CheckWord(Arg.Is<UserWord>(s => IsEquivalentTo(s, userWord))).Returns(score);
             //Act
             _sletter.Play();
             //Assert
-            _letterReel.Received(1).MoveSlots(userWord);
-            _letterReel.Received(2).GetAvailableLetters();
-            _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,nextReelLine)));
+            _letterReelGenerator.Received(1).MoveSlots(userWord);
+            _letterReelGenerator.Received(2).GenerateAReel();
+            var secondReelLine = new ReelLine(secondReelLetters);
+            _gamePrinter.Received(1).PrintReel(Arg.Is<ReelLine>(s => IsEquivalentTo(s,secondReelLine)));
         }
 
         [Theory, AutoData]
         public void PrintTheFullScore(UserWord userWord, Score score, UserWord secondUserWord, Score secondWordScore, Score totalScore)
         {
-            var nextReelLine = new ReelLine(new[]{'d','x','k','p','f','s','s',});
-            _letterReel.GetAvailableLetters().Returns(_sampleReelLine, nextReelLine);
+            _letterReelGenerator.GenerateAReel().Returns(_sampleReel);
             var printScoreWord = new UserWord("show score");
             _gameReader.ReadNextWord().Returns(printScoreWord, _quitWord);
             _userSessionManager.GetTotalScore().Returns(totalScore);
@@ -109,5 +114,4 @@ namespace ReelWordsTests
             return true;
         }
     }
-
 }

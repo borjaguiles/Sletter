@@ -2,9 +2,9 @@
 
 namespace ReelWords
 {
-    public interface ILetterReel
+    public interface ILetterReelGenerator
     {
-        ReelLine GetAvailableLetters();
+        LetterReel GenerateAReel();
         void MoveSlots(UserWord userWord);
     }
 }
