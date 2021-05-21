@@ -39,8 +39,6 @@ namespace ReelWords
                 return true;
             }
 
-            
-
             return next.Search(word.Substring(1));
         }
 
@@ -87,7 +85,7 @@ namespace ReelWords
             }
 
             son.Delete(word.Substring(1));
-            if (son._children.Count == 1)
+            if (son._children.Count == 0)
             {
                 _children.Remove(son);
             }

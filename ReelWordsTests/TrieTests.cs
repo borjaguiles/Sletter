@@ -33,6 +33,7 @@ namespace ReelWordsTests
             trie.Insert("help");
             trie.Insert("helping");
             trie.Insert("helpless");
+            trie.Insert("chelpless");
             trie.Delete("helping");
             Assert.True(trie.Search("help"));
             Assert.True(trie.Search("helpless"));
